@@ -1,0 +1,29 @@
+start server:
+pssh -v -t 0 -l ubuntu -h neighbor.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" -P '~/AOS/PA3/startbenchmarkservers.sh'
+
+ssh -i <pem file> ubuntu@<ip> "python ~/AOS/PA1/CIndexServer.py"
+pssh -v -t 0 -l ubuntu -h master.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" -P 'python ~/AOS/PA1/CIndexServer.py'
+
+start client:
+pssh -v -t 0 -l ubuntu -h active.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" -P '~/AOS/PA3/startbenchmarkclients.sh'
+ssh -i <pem file> ubuntu@<ip> "cd ~/AOS/PA3/Peer;python Peer.py -c ../config.json -p 3350"
+
+
+pssh -v -t 0 -l ubuntu -h master.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" -P 'cd ~/AOS/PA1/Peer; python Peer.py -s 3344'
+
+pssh -v -t 0 -l ubuntu -h active.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" -P 'cd ~/AOS/PA1/PeerBenchmark-Reg; python PeerBenchmark.py'
+
+ssh -i <pem file> ubuntu@<ip> "cd ~/AOS/PA1/PeerBenchmark-Reg; python PeerBenchmark.py"
+ssh -i <pem file> ubuntu@<ip> "cd ~/AOS/PA1/PeerBenchmark-Reg; python PeerBenchmark.py"
+
+check python status:
+pssh -v -t 0 -l ubuntu -h neighbor.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" -P 'ps -ef | grep python'
+
+close python:
+pssh -v -t 0 -l ubuntu -h neighbor.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" 'pkill -9 python'
+
+pssh -v -t 0 -l ubuntu -h neighbor.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" 'touch testing'
+pssh -v -t 0 -l ubuntu -h neighbor.txt -x "-t -t -oStrictHostKeyChecking=no -i <pem file>" 'touch testing'
+pssh -v -t 0 -l ubuntu -h neighbor.txt -x "-t -t -o StrictHostKeyChecking=no" 'touch testing'
+
+pscp -v -t 0 -l ubuntu -h neighbor.txt -x "-t -t -o StrictHostKeyChecking=no -i <pem file>" neighbor.txt $HOME
