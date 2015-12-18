@@ -1,0 +1,1 @@
+python /home/ubuntu/AOS/PA3/DIndexServer.py -c /home/ubuntu/AOS/PA3/config.json -s 3340
